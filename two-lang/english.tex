@@ -3,7 +3,10 @@
 
 \input define.tex
 
-\usepackage[sort&compress]{natbib}
+\input{preamble/pkg/biblatex/style/nature}
+\bibliography{bib/@PROJECT@/cite}
+\addbibresource{bib/@PROJECT@/cite.bib}
+% \usepackage[sort&compress]{natbib}
 
 \usepackage{comment}
 
