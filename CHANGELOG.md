@@ -1,3 +1,19 @@
+## [1.0.3](https://github.com/yamadharma/academic-article-template/compare/v1.0.2...v1.0.3) (2025-03-17)
+
+
+### Bug Fixes
+
+* **authors:** fix affiliation ([949fe66](https://github.com/yamadharma/academic-article-template/commit/949fe667e1f180e5a1da6b3e6ce77c7a396be098))
+* **author:** update authors information ([9fd100c](https://github.com/yamadharma/academic-article-template/commit/9fd100ce9fe4ea07d8aa00863f577fe4e88c2801))
+
+
+### Features
+
+* **makefiles:** add biblatex support ([a695291](https://github.com/yamadharma/academic-article-template/commit/a695291f4791a84185c56147f9a15a892c377c54))
+* **makefiles:** update makefiles ([c64f9a3](https://github.com/yamadharma/academic-article-template/commit/c64f9a36d171ea019f5e08781a67c98a7c9e4c09))
+
+
+
 ## [1.0.2](https://github.com/yamadharma/academic-article-template/compare/v1.0.1...v1.0.2) (2023-09-10)
 
 
