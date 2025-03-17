@@ -1,34 +1,33 @@
 \begin{no@TARGET@}
 \begin{noVestnik}
+\IfPackagesLoaded{biblatex}{\printbibliography}{%
 \begin{Russian}
   \ifthenelse{\boolean{xetex} \OR \boolean{luatex}}
   {\bibliographystyle{ugost2008l}}
   {\bibliographystyle{gost2008l}}
 \end{Russian}
 \begin{English}
-% \bibliographystyle{abbrvnat}
-% \bibliographystyle{naturemag}
-% \bibliographystyle{apsrev4-1}
-% \bibliographystyle{aipnum4-1}
-% \bibliographystyle{apsrmp4-1}
-% \bibliographystyle{gost2008l}
-% \bibliographystyle{plainnat}
-% \bibliographystyle{abbrvnat}
-% \bibliographystyle{unsrtnat}
-% \bibliographystyle{elsarticle-num}
- \bibliographystyle{elsarticle-num-names}
+  % \bibliographystyle{abbrvnat}
+  \bibliographystyleibliographystyle{naturemag}
+  % \bibliographystylele{apsrev4-1}
+  % \bibliographystyle{aipnum4-1}
+  % \bibliographystyle{apsrmp4-1}
+  % \bibliographystyle{gost2008l}
+  % \bibliographystyle{plainnat}
+  % \bibliographystyle{abbrvnat}
+  % \bibliographystyle{unsrtnat}
+  % \bibliographystyle{elsarticle-num}
+  % \bibliographystyle{elsarticle-num-names}
 \end{English}
-
-% \nocite{*}
 \bibliography{bib/@PROJECT@/cite}
+}
 \end{noVestnik}
-
 
 \begin{Vestnik}
   \putbib[bib/@PROJECT@/cite_ru]
-  
+
   \makealttitle
-  
+
   \putaltbib[bib/@PROJECT@/cite_en]
 
 \begin{English}
@@ -56,4 +55,3 @@
 %%% mode: latex
 %%% coding: utf-8-unix
 %%% End:
-

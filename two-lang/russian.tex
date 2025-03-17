@@ -1,6 +1,10 @@
-\input preamble
+\input preamble/include/preamble
 
-\input define
+\input preamble/define
+
+\input{preamble/pkg/biblatex/style/gost}
+\bibliography{bib/@PROJECT@/cite}
+\addbibresource{bib/@PROJECT@/cite.bib}
 
 \usepackage{comment}
 
