@@ -1,17 +1,60 @@
 \begin{Russian}
 \section{Результаты}
-\end{Russian}
-\begin{English}
-\section{Results}
-\end{English}
 \label{sec:results}
 
-\begin{Russian}
+По результам эмуляций были построены графики для каждой модели. Для этого был создан скрипт-анализатор логов, который построил графики, используя известную библиотеку matplotlib. Значения на оси абсцисс отражают время эксперимента, а на оси ординат - число хостов.
+
+Рассмотрим подробнее и сравним графики обоих инструментов по модели SEIRS (рис.~\ref{fig:seirs_plot_k}), (рис.~\ref{fig:seirs_plot_cl}).
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{image/seirs_plot_k.png}
+  \caption{График процесса заражения по модели SEIRS на Kathará}
+  \label{fig:seirs_plot_k}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{image/seirs_plot_cl.png}
+  \caption{График процесса заражения по модели SEIRS на Containerlab}
+  \label{fig:seirs_plot_cl}
+\end{figure}
+
+Из графиков видны различия в динамике распространения инфекции. В Kathará эпидемический процесс развивается быстрее, что выражается в более раннем пике инфицированных узлов и ускоренном перераспределении состояний между компартментами S, E, I и R. Напротив, в Containerlab наблюдается более растянутая динамика. Различия темпа эмуляции могут указывать на различия используемых docker-контейнеров, ведь контейнер Kathará применяется минималистичный образ, тогда как в Containerlab более тяжелое окружение.
 
 \end{Russian}
+
+
+
+
 \begin{English}
+\section{Results}
+\label{sec:results}
+
+Based on the emulation results, graphs were constructed for each model. For this purpose, a log analysis script was created, which constructed graphs using the well-known matplotlib library. The values on the x-axis reflect the experiment time, and those on the y-axis reflect the number of hosts.
+
+Let's take a closer look and compare the graphs of both tools.
+ 
+SIR model (Fig.~\ref{fig:seirs_plot_k}), (Fig.~\ref{fig:seirs_plot_cl}).
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{image/seirs_plot_k.png}
+  \caption{Graph of the infection process according to the SEIRS model on Kathará}
+  \label{fig:seirs_plot_k}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{image/seirs_plot_cl.png}
+  \caption{Graph of the infection process according to the SEIRS model on Containerlab}
+  \label{fig:seirs_plot_cl}
+\end{figure}
+
+The graphs show differences in the dynamics of infection spread. In Kathará, the epidemic process develops faster, which is reflected in an earlier peak of infected nodes and accelerated redistribution of states between compartments S, E, I, and R. In contrast, Containerlab shows a more protracted dynamic. Differences in the speed of emulation may indicate differences in the docker containers used, since the Kathará container uses a minimalist image, while Containerlab has a heavier environment.
 
 \end{English}
+
 
 
 %%% Local Variables:

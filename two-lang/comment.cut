@@ -1,5 +1,3 @@
-\begin{no@TARGET@}
-\begin{noVestnik}
 \IfPackagesLoaded{biblatex}{\printbibliography}{%
 \begin{Russian}
   \ifthenelse{\boolean{xetex} \OR \boolean{luatex}}
@@ -21,37 +19,3 @@
 \end{English}
 \bibliography{bib/kathara-containerlab/cite}
 }
-\end{noVestnik}
-
-\begin{Vestnik}
-  \putbib[bib/kathara-containerlab/cite_ru]
-
-  \makealttitle
-
-  \putaltbib[bib/kathara-containerlab/cite_en]
-
-\begin{English}
-} % END \selectlanguage
-\end{English}
-
-\end{Vestnik}
-
-\end{no@TARGET@}
-
-% \begin{Lncs}
-% %  \section*{References}
-%   \bibliography{lncs_one-step-diagram}
-% \end{Lncs}
-
-%\begin{Iopconf}
-%\section*{References}
-%\end{Iopconf}
-
-\begin{@TARGET@}
-  \bibliography{kathara-containerlab}
-\end{@TARGET@}
-
-%%% Local Variables:
-%%% mode: latex
-%%% coding: utf-8-unix
-%%% End:

@@ -1,0 +1,297 @@
+\begin{Russian}
+\section{Основная часть}
+\end{Russian}
+\begin{English}
+\section{Main part}
+\end{English}
+\label{sec:main_part}
+
+\begin{Russian}
+\subsection{Эпидемиологические модели}
+\label{sec:models}
+
+Компартментные модели - математическая модель, которая описывает процессы взаимодействия различных субъектов (например, особей) из разных групп (компартментов) в течение времени. Каждый субъект принадлежит одной группе, при этом внутри каждой группы субъекты неразличимы.
+
+Одной из простейших компартментных моделей является модель распространения эпидемий SIR. Эта модель была создана Уильямом Кермаком и Андерсоном МакКендриком в 1927 году. Все особи популяции в данном модели делсятся на три группы:
+
+\begin{itemize}
+    \item S (susceptible) - здоровые особи, подверженные заболеванию;
+    \item I (infectious) - зараженные особи, распространяющие болезнь;
+    \item R (recovered) - переболевшие особи, приобретшие иммунитет.
+\end{itemize}
+
+Однако, во многих болезнях есть икубационных период, во время которого особь заражена, но не пока заразна. Так появилась модель SEIR, где присутвует четвертая группа E (exposed) - особи, находящиеся в латентном периоде заболевания. Такая модель повышает точность моделирования инфекционных заболеваний, например, COVID-19.
+
+Мы будем рассматривать замкнутую популяцию, где отсутствуют процессы рождаемости и смертности. Тогда можно описать эволюцию особи следующей диаграммой:
+
+$$
+S \xrightarrow{\beta} E \xrightarrow{\sigma} I \xrightarrow{\gamma} R
+$$
+
+Модель описывается системой дифференциальных уравнений:
+
+$$
+\begin{aligned}
+\frac{dS}{dt} &= -\frac{\beta SI}{N}, \\
+\frac{dE}{dt} &= \frac{\beta SI}{N} - \sigma E, \\
+\frac{dI}{dt} &= \sigma E - \gamma I, \\
+\frac{dR}{dt} &= \gamma I, \\
+N &= S(t) + E(t) + I(t) + R(t),
+\end{aligned}
+$$
+
+где
+\begin{itemize}
+    \item $\beta$ - коэффициент заражения (вероятность того, что контакт между восприимчивым и заражённым приводит к новому заражению) ($S \rightarrow E$);
+    \item $\sigma$ - коэффициент инкубационного перехода (вероятность того, что зараженный индивид становится заразным) ($E \rightarrow I$);
+    \item $\gamma$ - коэффициент выздоровления (вероятность того, что заражённый индивид выздоравливает) ($I \rightarrow R$).
+\end{itemize}
+
+Еще одной модификацией модели SIR является модель SEIRS. В жизни у определенной части переболевших особей иммунитет со временем ослабевает. Модель SEIRS допускает перехо особей из состояния выздоровевших в восприимчивое состояние.
+
+Диаграмма эволюции особи выглядит следующим образом (рис.~\ref{fig:seirs_diagram}).
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{image/seirs_diagram.png}
+  \caption{Диаграмма эволюции особи в модели SEIRS}
+  \label{fig:seirs_diagram}
+\end{figure}
+
+Система дифференциальных уравнений для модели SEIRS имеет вид:
+
+$$
+\begin{aligned}
+\frac{dS}{dt} &= -\frac{\beta S I}{N} + \xi R, \\
+\frac{dE}{dt} &= \frac{\beta S I}{N} - \sigma E, \\
+\frac{dI}{dt} &= \sigma E - \gamma I, \\
+\frac{dR}{dt} &= \gamma I - \xi R \\
+N &= S(t) + E(t) + I(t) + R(t),
+\end{aligned}
+$$
+
+где
+\begin{itemize}
+    \item $\xi$ - вероятность потери иммунитета (вероятность того, что выздоровевший индивид со временем возвращается в категорию восприимчивых) ($R \rightarrow S$).
+\end{itemize}
+
+Если приток восприимчивых в популяцию достаточно велик, система в установившемся состоянии переходит в эндемическое равновесие (устойчивое состояние системы, в котором инфекция сохраняется на постоянном уровне: не исчезает и не угасает), сопровождаемое затухающими колебаниями численности заболевших.
+
+\subsection{Моделирование}
+\label{sec:modelling}
+
+Для реализации эксперимента использовались два инструмента эмуляции сетей: Kathará и Containerlab. Kathará -- система эмуляции сетей на основе docker-контейнеров с открытым исходным кодом, поддерживаемое на всех основных операционных системах (Linux, macOs, Windows). Она предназначена для демонстрации взаимодействия узлов сети в изолированной среде и разработки новых сетевых протоколов.
+
+Containerlab -- инструмент, предоставляющий интерфейс командной строки для оркестрации и управления сетевыми лабораториями на основе контейнеров. Для создании лабораторной топологии Containerlab поднимает контейнеры, создает виртуальную связь между ними и самостоятельно управляет жизненным циклом всей лаборатории. Эмулятор использует YAML-формат для  описания топологии и поддерживает интеграцию с Docker.
+
+В данной работе использовались стандартный образ на базе Debian с предустановленными сетевыми утилитами (kathara/base) в Kathará и кастомный образ на базе debian:bookworm-slim с openssh-server, openssh-client, python3, iproute2 в Containerlab.
+
+Топология сети одинакова для обоих инструментов: плоская сеть со ста узлами. Первый узел хоста (pc1) является нулевым пациентом, т. е. он инфицирован изначально. Этот узел и запускает распространение вируса. Переходы реализованы как стохастические процессы: каждые t секунд хост проверяет вероятность перехода в следующее состояние. В работе задействован принцип червя Морриса: если хост уязвим, то происходит дальнейшее распространение с помощью копирования Python-скрипта по SCP и удалённый запуск "вируса" через SSH. Каждый узел в свою очередь прослушивает TCP-порт 4000 для обмена информацией о текущем состоянии с соседями. В то же время ведется логирование событий, а именно переходов между состояниями, в CSV-файл. Для мониторинга процесса был написан внешний скрипт, опрашивающий все узлы и собирающий общую статистику по состояниям S, E, I, R (S, I, R для модели SIR). Параметры эмуляций отражены в таблицах (табл. ~\ref{tab:sir-params}, табл. ~\ref{tab:seir-params}, табл. ~\ref{tab:seirs-params}). 
+
+% Таблица 1: Параметры модели SIR
+\begin{table}[htbp]
+\centering
+\caption{Параметры модели SIR}
+\label{tab:sir-params}
+\begin{tabular}{lcc}
+\hline
+\textbf{Параметр} & \textbf{Обозначение} & \textbf{Значение} \\
+\hline
+Вероятность заражения & $\beta$ & 0.8 \\
+Вероятность выздоровления & $\gamma$ & 0.1 \\
+Интервал проверки $I \to R$ & --- & 5 с \\
+Задержка между сканированиями & --- & 0.2 с \\
+\hline
+\end{tabular}
+\end{table}
+
+% Таблица 2: Параметры модели SEIR
+\begin{table}[htbp]
+\centering
+\caption{Параметры модели SEIR}
+\label{tab:seir-params}
+\begin{tabular}{lcc}
+\hline
+\textbf{Параметр} & \textbf{Обозначение} & \textbf{Значение} \\
+\hline
+Вероятность заражения & $\beta$ & 0.4 \\
+Вероятность активации & $\sigma$ & 0.4 \\
+Вероятность выздоровления & $\gamma$ & 0.3 \\
+Интервал проверки $E \to I$ & --- & 3 с \\
+Интервал проверки $I \to R$ & --- & 5 с \\
+Задержка между сканированиями & --- & 2 с \\
+\hline
+\end{tabular}
+\end{table}
+
+% Таблица 3: Параметры модели SEIRS
+\begin{table}[htbp]
+\centering
+\caption{Параметры модели SEIRS}
+\label{tab:seirs-params}
+\begin{tabular}{lcc}
+\hline
+\textbf{Параметр} & \textbf{Обозначение} & \textbf{Значение} \\
+\hline
+Вероятность заражения & $\beta$ & 0.7 \\
+Вероятность активации & $\sigma$ & 0.5 \\
+Вероятность выздоровления & $\gamma$ & 0.15 \\
+Вероятность потери иммунитета & $\xi$ & 0.25 \\
+Интервал проверки $E \to I$ & --- & 3 с \\
+Интервал проверки $I \to R$ & --- & 8 с \\
+Интервал проверки $R \to S$ & --- & 15 с \\
+Максимум циклов реинфекции & --- & 3 \\
+Задержка между сканированиями & --- & 1 с \\
+\hline
+\end{tabular}
+\end{table}
+
+\end{Russian}
+
+\begin{English}
+\subsection{Эпидемиологические модели}
+\label{sec:models}
+
+Compartment models are mathematical models that describe the processes of interaction between different entities (e.g., individuals) from different groups (compartments) over time. Each entity belongs to one group, and within each group, the entities are indistinguishable.
+
+One of the simplest compartmental models is the SIR epidemic spread model. This model was created by William Kermack and Anderson McKendrick in 1927. All individuals in the population in this model are divided into three groups:
+
+\begin{itemize}
+    \item S (susceptible) - healthy individuals who are susceptible to the disease;
+    \item I (infectious) - infected individuals who spread the disease;
+    \item R (recovered) - individuals who have recovered from the disease and acquired immunity.
+\end{itemize}
+
+However, many diseases have an incubation period during which an individual is infected but not yet contagious. This led to the SEIR model, which includes a fourth group, E (exposed), consisting of individuals in the latent period of the disease. This model increases the accuracy of modeling infectious diseases such as COVID-19.
+
+We will consider a closed population where there are no birth and death processes. Then the evolution of an individual can be described by the following diagram:
+
+$$
+S \xrightarrow{\beta} E \xrightarrow{\sigma} I \xrightarrow{\gamma} R
+$$
+
+The model is described by a system of differential equations:
+
+$$
+\begin{aligned}
+\frac{dS}{dt} &= -\frac{\beta SI}{N}, \\
+\frac{dE}{dt} &= \frac{\beta SI} {N} - \sigma E, \\
+\frac{dI}{dt} &= \sigma E - \gamma I, \\
+\frac{dR}{dt} &= \gamma I, \\
+N &= S(t) + E(t) + I(t) + R(t),
+\end{aligned}
+$$
+
+where
+\begin{itemize}
+    \item $\beta$ - infection coefficient (the probability that contact between a susceptible and an infected individual will result in a new infection) ($S \rightarrow E$);
+    \item $\sigma$ - incubation transition coefficient (the probability that an infected individual will become contagious) ($E \rightarrow I$);
+    \item $\gamma$ - recovery coefficient (probability that an infected individual recovers) ($I \rightarrow R$).
+\end{itemize}
+
+Another modification of the SIR model is the SEIRS model. In real life, the immunity of a certain proportion of recovered individuals weakens over time. The SEIRS model allows individuals to transition from a recovered state to a susceptible state.
+
+The individual evolution diagram looks like this (Fig.~\ref{fig:seirs_diagram}).
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{image/seirs_diagram.png}
+  \caption{Individual evolution diagram in the SEIRS model}
+  \label{fig:seirs_diagram}
+\end{figure}
+
+The system of differential equations for the SEIRS model is as follows:
+
+$$
+\begin{aligned}
+\frac{dS}{dt} &= -\frac{\beta S I}{N} + \xi R, \\
+\frac{dE}{dt} &= \frac{\beta S I} {N} - \sigma E, \\
+\frac{dI}{dt} &= \sigma E - \gamma I, \\
+\frac{dR}{dt} &= \gamma I - \xi R \\
+N &= S(t) + E(t) + I(t) + R(t),
+\end{aligned}
+$$
+
+where
+\begin{itemize}
+    \item $\xi$ - probability of immunity loss (probability that a recovered individual will eventually return to the susceptible category) ($R \rightarrow S$).
+\end{itemize}
+
+If the influx of susceptible individuals into the population is large enough, the system in a steady state transitions to endemic equilibrium (a stable state of the system in which the infection remains at a constant level: it does not disappear or fade away), accompanied by damped fluctuations in the number of infected individuals.
+
+\subsection{Modeling}
+\label{sec:modeling}
+
+Two network emulation tools were used to conduct the experiment: Kathará and Containerlab. Kathará is an open-source network emulation system based on Docker containers, supported on all major operating systems (Linux, macOS, Windows). It is designed to demonstrate the interaction of network nodes in an isolated environment and to develop new network protocols.
+
+Containerlab is a tool that provides a command-line interface for orchestrating and managing container-based network labs. To create a lab topology, Containerlab launches containers, establishes virtual connections between them, and independently manages the lifecycle of the entire lab. The emulator uses the YAML format to describe the topology and supports integration with Docker.
+
+This work used a standard Debian-based image with pre-installed network utilities (kathara/base) in Kathará and a custom debian:bookworm-slim-based image with openssh-server, openssh-client, python3, and iproute2 in Containerlab.
+
+The network topology is the same for both tools: a flat network with 100 nodes. The first host node (pc1) is patient zero, i.e., it is infected from the outset. This node initiates the spread of the virus. Transitions are implemented as stochastic processes: every t seconds, the host checks the probability of transitioning to the next state. The work uses the Morris worm principle: if the host is vulnerable, further propagation occurs by copying the Python script via SCP and remotely launching the “virus” via SSH. Each node in turn listens to TCP port 4000 to exchange information about its current state with its neighbors. At the same time, events, namely transitions between states, are logged in a CSV file. To monitor the process, an external script was written that polls all nodes and collects general statistics on the states S, E, I, R (S, I, R for the SIR model). The emulation parameters are reflected in the tables (Table ~\ref{tab:sir-params}, Table ~\ref{tab:seir-params}, Table ~\ref{tab:seirs-params}). 
+
+% Table 1: SIR model parameters
+\begin{table}[htbp]
+\centering
+\caption{SIR model parameters}
+\label{tab:sir-params}
+\begin{tabular}{lcc}
+\hline
+\textbf{Parameter} & \textbf{Symbol} & \textbf{Value} \\
+\hline
+Probability of infection & $\beta$ & 0.8 \\
+Probability of recovery & $\gamma$ & 0.1 \\
+Interval between checks $I \to R$ & --- & 5 s \\
+Delay between scans & --- & 0.2 s \\
+\hline
+\end{tabular}
+\end{table}
+
+% Table 2: SEIR model parameters
+\begin{table}[htbp]
+\centering
+\caption{SEIR model parameters}
+\label{tab:seir-params}
+\begin{tabular}{lcc}
+\hline
+\textbf{Parameter} & \textbf{Symbol} & \textbf{Value} \\
+\hline
+Infection probability & $\beta$ & 0.4 \\
+Activation probability & $\sigma$ & 0.4 \\
+Recovery probability & $\gamma$ & 0.3 \\
+Check interval $E \to I$ & --- & 3 s \\
+Check interval $I \to R$ & --- & 5 s \\
+Delay between scans & --- & 2 s \\
+\hline
+\end{tabular}
+\end{table}
+
+% Table 3: SEIRS model parameters
+\begin{table}[htbp]
+\centering
+\caption{SEIRS model parameters}
+\label{tab:seirs-params}
+\begin{tabular}{lcc}
+\hline
+\textbf{Parameter} & \textbf{Symbol} & \textbf{Value} \\
+\hline
+Infection probability & $\beta$ & 0.7 \\
+Activation probability & $\sigma$ & 0.5 \\
+Probability of recovery & $\gamma$ & 0.15 \\
+Probability of immunity loss & $\xi$ & 0.25 \\
+Check interval $E \to I$ & --- & 3 s \\
+Check interval $I \to R$ & --- & 8 s \\
+Check interval $R \to S$ & --- & 15 s \\
+Maximum number of reinfection cycles & --- & 3 \\
+Delay between scans & --- & 1 s \\
+\hline
+\end{tabular}
+\end{table}
+
+\end{English}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% coding: utf-8-unix
+%%% End:

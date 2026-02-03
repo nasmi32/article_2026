@@ -1,43 +1,41 @@
 %%% Введение
 \begin{Russian}
 \section{Введение}
-\end{Russian}
-\begin{English}
-\section{Introduction}
-\end{English}
 \label{sec:intro}
 
-\begin{Russian}
+Данное исследование посвящено проведению натурного эксперимента по моделированию заражения компьютерным вирусом в эмуляторе Kathara. Изучение механизмов распространения вируса позволяет проанализировать возможности системы, в которой проводятся исследования, и ее устойчивость к вредоносному трафику. Традиционно для исследования динамики распространения вирусов применяются математические модели, заимствованные из эпидемиологии ~\cite{Hoang2025}, такие как модели SIR (Susceptible-Infected-Recovered), SEIR (Susceptible-Exposed-Infected-Recovered) и SEIRS (Susceptible-Exposed-Infected-Recovered-Susceptible). Эти модели позволяют описывать процессы заражения, инкубации и восстановления в популяции узлов сети.
+
+Средство моделирования Kathara дает возможность создавать виртуальные сетевые топологии и исследовать их поведение в контролируемых условиях. Несмотря на растущую популярность рассматриваемого эмулятора в академическом сообществе ~\cite{Huu2025} ~\cite{Usmanov2018}, систематический анализ его технических характеристик и производительности при моделировании процессов распространения компьютерных вирусов остаётся недостаточно изученным вопросом. Эта работа направлена на оценку возможностей системы при работе с различными эпидемиологическими моделями, а также понимание ограничений платформы с точки зрения масштабируемости и точности результатов.
+
+Использование хорошо изученных эпидемиологических моделей SIR, SEIR и SEIRS в качестве теоретической основы позволяет сосредоточить внимание именно на системных параметрах эмулятора: использовании память, потреблении памяти и метриках сетевого трафика.
 
 \end{Russian}
-\begin{English}
 
-\end{English}
-
-\begin{Russian}
-\end{Russian}
 \begin{English}
+\section{Introduction}
+\label{sec:intro}
+
+This study is devoted to conducting a field experiment on modeling computer virus infection in the Kathara emulator. Studying the mechanisms of virus propagation allows us to analyze the capabilities of the system in which the research is conducted and its resistance to malicious traffic. Traditionally, mathematical models borrowed from epidemiology ~\cite{Hoang2025}, such as SIR (Susceptible-Infected-Recovered), SEIR (Susceptible-Exposed-Infected-Recovered), and SEIRS (Susceptible-Exposed-Infected-Recovered-Susceptible) models. These models allow us to describe the processes of infection, incubation, and recovery in a population of network nodes.
+
+The Kathara simulation tool makes it possible to create virtual network topologies and study their behavior under controlled conditions. Despite the growing popularity of this emulator in the academic community ~\cite{Huu2025} ~\cite{Usmanov2018}, systematic analysis of its technical characteristics and performance in modeling the spread of computer viruses remains an understudied issue. This work aims to evaluate the system's capabilities when working with various epidemiological models, as well as to understand the platform's limitations in terms of scalability and accuracy of results.
+
+Using well-studied epidemiological models SIR, SEIR, and SEIRS as a theoretical basis allows us to focus specifically on the system parameters of the emulator: memory usage, memory consumption, and network traffic metrics.
+
 \end{English}
 
 %%% Структура статьи
-\begin{Russian}
-\subsection{Структура статьи}
-\end{Russian}
-\begin{English}
-\subsection{Structure of the paper}
-\end{English}
-\label{sec:structure}
+%\begin{Russian}
+%\subsection{Структура статьи}
 
-% \begin{Russian}
-% В~разделе~\ref{sec:notation} даются основные обозначения и соглашения,
-% применяемые в статье. В разделе~\ref{sec:maxwell_curv} вводятся основные
-% соотношения для уравнений Максвелла в криволинейных координатах (для
-% более подробного ознакомления можно обратиться к другим статьям
-% авторов~\cite{kulyabov:2011:vestnik:curve-maxwell,
-%   kulyabov:2012:vestnik:2012-1}). В разделе~\ref{sec:formal_geometr}
-% приводятся собственно
-% расчёты по геометризации Плебаньского.
-% \end{Russian}
+%В разделе~\ref{sec:models} вводятся уравнения моделей распространения компьютерного вируса. В разделе~\ref{sec:modelling} приводится краткое описание топологий и программной реализации эксперимента.
+
+%\end{Russian}
+
+%\begin{English}
+%\subsection{Structure of the paper}
+%\end{English}
+%\label{sec:structure}
+
 % \begin{English}
 % In paragraph~\ref{sec:notation} we prosecuted provides basic notation and conventions
 % used in the article. In paragraph~\ref{sec:maxwell_curv} are the main
@@ -48,42 +46,24 @@
 % \end{English}
 
 %%% Обозначения и соглашения
-\begin{Russian}
-\subsection{Обозначения и соглашения}
-\end{Russian}
-\begin{English}
-\subsection{Notations and conventions}
-\end{English}
-\label{sec:notation}
+%\begin{Russian}
+%\subsection{Обозначения и соглашения}
+
+%\begin{enumerate}
+
+%\item Будем придерживаться следующих соглашений.  Греческие индексы ($\beta$, $\sigma$, $\gamma$, $\xi$) будут описывать вероятности заражения, инкубационного периода, выздоровления и потери иммунитета соответственно.
+
+%\end{enumerate}
+%\end{Russian}
+
+%\begin{English}
+%\subsection{Notations and conventions}
+%\end{English}
+%\label{sec:notation}
 
 
-% \begin{Russian}
-%   \begin{enumerate}
 
-%   \item Будем использовать нотацию абстрактных
-%     индексов~\cite{penrose-rindler:spinors::ru}. В данной нотации тензор как
-%     целостный объект обозначается просто индексом (например, $x^{i}$),
-%     компоненты обозначаются подчёркнутым индексом (например,
-%     $x^{\crd{i}}$).
 
-%   \item Будем придерживаться следующих соглашений.  Греческие индексы
-%     ($\alpha$, $\beta$) будут относиться к четырёхмерному
-%     пространству и в компонентном виде будут иметь следующие значения:
-%     $\crd{\alpha} = \overline{0,3}$. Латинские индексы из середины
-%     алфавита ($i$, $j$, $k$) будут относиться к трёхмерному
-%     пространству и в компонентном виде будут иметь следующие значения:
-%     $\crd{i} = \overline{1,3}$.
-
-%   \item Запятой в индексе обозначается частная производная по
-%     соответствующей координате ($f_{,i} := \partial_{i} f$);
-%     точкой с запятой --- ковариантная производная ($f_{;i} := \nabla_{i}
-%     f$).
-
-%   \item Для записи уравнений электродинамики в работе используется
-%     система СГС симметричная~\cite{sivukhin:1979:ufn::ru}.
-
-%   \end{enumerate}
-% \end{Russian}
 % \begin{English}
 %   \begin{enumerate}
 
