@@ -2,7 +2,7 @@
 \section{Результаты}
 \label{sec:results}
 
-По результам эмуляций были построены графики для каждой модели. Для этого был создан скрипт-анализатор логов, который построил графики, используя известную библиотеку matplotlib. Значения на оси абсцисс отражают время эксперимента, а на оси ординат - число хостов.
+По результатам эмуляций были построены графики для каждой модели. Для этого был создан скрипт-анализатор логов, который построил графики, используя известную библиотеку matplotlib. Значения на оси абсцисс отражают время эксперимента, а на оси ординат - число хостов.
 
 Рассмотрим подробнее и сравним графики обоих инструментов по модели SEIRS (рис.~\ref{fig:seirs_plot_k}), (рис.~\ref{fig:seirs_plot_cl}).
 
@@ -20,7 +20,33 @@
   \label{fig:seirs_plot_cl}
 \end{figure}
 
-Из графиков видны различия в динамике распространения инфекции. В Kathará эпидемический процесс развивается быстрее, что выражается в более раннем пике инфицированных узлов и ускоренном перераспределении состояний между компартментами S, E, I и R. Напротив, в Containerlab наблюдается более растянутая динамика. Различия темпа эмуляции могут указывать на различия используемых docker-контейнеров, ведь контейнер Kathará применяется минималистичный образ, тогда как в Containerlab более тяжелое окружение.
+Из графиков видны различия в динамике распространения инфекции. В Containerlab эпидемический процесс развивается быстрее, что выражается в более раннем пике инфицированных узлов и ускоренном перераспределении состояний между компартментами S, E, I и R. Напротив, в Kathará наблюдается более растянутая динамика. Различия темпа эмуляции могут указывать на различия используемых docker-контейнеров. Однако, нужно учитывать, что распространение вируса моделируется стохастически, поэтому рассмотрим детальнее параметры системы (табл.~\ref{tab:comparison}), а не тенденции заражения.
+
+\begin{table}[h]
+\centering
+\caption{Сравнение метрик Kathará и Containerlab}
+\label{tab:comparison}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Метрика} & \textbf{Kathará (avg / max)} & \textbf{Containerlab (avg / max)} \\
+\hline
+Общее количество сэмплов & 267 & 183 \\
+Длительность эксперимента & 22 мин 16 сек & 16 мин 30 сек \\
+\hline
+Хост: загрузка CPU (\%) & 50.2\% / 100.0\% & 23.7\% / 91.6\% \\
+Хост: использование память (\%) & 61.6\% / 62.7\% & 25.2\% / 30.2\% \\
+Хост: использование памяти (GB) & 7.89 / 8.02 GB & 1.69 / 2.06 GB \\
+Хост: скорость передачи (MB/s) & 0.02 MB/s & 1.35 MB/s \\
+Хост: скорость приема (MB/s) & 0.03 MB/s & 1.09 MB/s \\
+\hline
+Контейнеры: количество & 101.0 & 99.5 \\
+Контейнеры: загрузка CPU (\%) & 128.2\% / 348.8\% & 282.7\% / 1158.7\% \\
+Контейнеры: использование памяти (GB) & 0.66 / 1.18 GB & 0.73 / 1.10 GB \\
+\hline
+\end{tabular}
+\end{table}
+
+По данным из таблицы, Containerlab использовал в 4.7 раз меньше памяти чем Kathará. Он активнее обменивался трафиком при меньшей загруженности процессора. Kathará же имеет меньшую нагрузку со стороны контейнеров.
 
 \end{Russian}
 
@@ -31,27 +57,51 @@
 \section{Results}
 \label{sec:results}
 
-Based on the emulation results, graphs were constructed for each model. For this purpose, a log analysis script was created, which constructed graphs using the well-known matplotlib library. The values on the x-axis reflect the experiment time, and those on the y-axis reflect the number of hosts.
+Based on the emulation results, graphs were constructed for each model. For this purpose, a log analysis script was created, which constructed graphs using the well-known matplotlib library. The values on the x-axis reflect the time of the experiment, and the values on the y-axis reflect the number of hosts.
 
-Let's take a closer look and compare the graphs of both tools.
- 
-SIR model (Fig.~\ref{fig:seirs_plot_k}), (Fig.~\ref{fig:seirs_plot_cl}).
+Let's take a closer look and compare the graphs of both tools for the SEIRS model (Fig.~\ref{fig:seirs_plot_k}), (Fig.~\ref{fig:seirs_plot_cl}).
 
 \begin{figure}[!h]
   \centering
   \includegraphics[width=0.8\linewidth]{image/seirs_plot_k.png}
-  \caption{Graph of the infection process according to the SEIRS model on Kathará}
+  \caption{Graph of the propagation according to the SEIRS model on Kathará}
   \label{fig:seirs_plot_k}
 \end{figure}
 
 \begin{figure}[!h]
   \centering
   \includegraphics[width=0.8\linewidth]{image/seirs_plot_cl.png}
-  \caption{Graph of the infection process according to the SEIRS model on Containerlab}
+  \caption{Graph of the propagation according to the SEIRS model on Containerlab}
   \label{fig:seirs_plot_cl}
 \end{figure}
 
-The graphs show differences in the dynamics of infection spread. In Kathará, the epidemic process develops faster, which is reflected in an earlier peak of infected nodes and accelerated redistribution of states between compartments S, E, I, and R. In contrast, Containerlab shows a more protracted dynamic. Differences in the speed of emulation may indicate differences in the docker containers used, since the Kathará container uses a minimalist image, while Containerlab has a heavier environment.
+The graphs show differences in the dynamics of the spread of infection. In Containerlab, the epidemic process develops faster, which is reflected in an earlier peak of infected nodes and accelerated redistribution of states between compartments S, E, I, and R. In contrast, Kathará shows a more protracted dynamic. Differences in the emulation rate may indicate differences in the docker containers used. However, it should be noted that the spread of the virus is modeled stochastically, so let's take a closer look at the system parameters (Table~\ref{tab:comparison}) rather than infection trends. 
+
+\begin{table}[h]
+\centering
+\caption{Comparison of Kathará and Containerlab metrics}
+\label{tab:comparison}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Metric} & \textbf{Kathará (avg / max)} & \textbf{Containerlab (avg / max)} \\
+\hline
+Total number of samples & 267 & 183 \\
+Experiment duration & 22 min 16 sec & 16 min 30 sec \\
+\hline
+Host: CPU load (\%) & 50.2\% / 100.0\% & 23.7\% / 91.6\% \\
+Host: Memory usage (\%) & 61.6\% / 62.7\% & 25.2\% / 30.2\% \\
+Host: Memory usage (GB) & 7.89 / 8.02 GB & 1.69 / 2.06 GB \\
+Host: transfer rate (MB/s) & 0.02 MB/s & 1.35 MB/s \\
+Host: receive rate (MB/s) & 0.03 MB/s & 1.09 MB/s \\
+\hline
+Containers: count & 101.0 & 99.5 \\
+Containers: CPU load (\%) & 128.2\% / 348.8\% & 282.7\% / 1158.7\% \\
+Containers: memory usage (GB) & 0.66 / 1.18 GB & 0.73 / 1.10 GB \\
+\hline
+\end{tabular}
+\end{table}
+
+According to the table, Containerlab used 4.7 times less memory than Kathará. It exchanged traffic more actively with less CPU load. Kathará, on the other hand, has a lower container load.
 
 \end{English}
 
